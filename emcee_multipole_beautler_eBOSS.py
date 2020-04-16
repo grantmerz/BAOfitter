@@ -35,7 +35,7 @@ covpath = ns.covmatrix
 redshift = ns.redshift
 outputMC = ns.outputMC
 
-#use nbodykit's ConvolvedFFTPower algorithm to read in the power spectrum
+#This is for using nbodykit's ConvolvedFFTPower algorithm to read in the power spectrum
 #r = ConvolvedFFTPower.load(inputpk)
 #poles = r.poles
 
@@ -51,7 +51,7 @@ outputMC = ns.outputMC
 #P2dat = P2dat[valid]
 
 
-
+#This is for reading in an EZmock
 dat = np.loadtxt(inputpk)
 kdat = dat[:,1]
 valid = (kdat>0.01) & (kdat<0.3)
@@ -81,7 +81,7 @@ ell = [0,2]
 print(ell,redshift)
 
 #initializiong a cosmology and the linear and no-wiggle linear power spectra functions
-cosmo = cosmology.Cosmology(h=0.676,Omega0_b=0.04814257).match(Omega0_m=0.31)   #eBOSS cosmology
+cosmo = cosmology.Cosmology(h=0.6777,Omega0_b=0.048206,n_s=0.9611).match(Omega0_m=0.307115)
 Plinfunc = cosmology.LinearPower(cosmo, redshift=redshift, transfer='CLASS')
 Psmlinfunc = cosmology.LinearPower(cosmo, redshift=redshift, transfer='NoWiggleEisensteinHu')
 
