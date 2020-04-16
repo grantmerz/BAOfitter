@@ -36,19 +36,28 @@ redshift = ns.redshift
 outputMC = ns.outputMC
 
 #use nbodykit's ConvolvedFFTPower algorithm to read in the power spectrum
-r = ConvolvedFFTPower.load(inputpk)
-poles = r.poles
+#r = ConvolvedFFTPower.load(inputpk)
+#poles = r.poles
 
 #reading in the multipole data and k values
-P0dat = poles['power_0'].real
-P2dat = poles['power_2'].real
-kdat = poles['k']
+#P0dat = poles['power_0'].real
+#P2dat = poles['power_2'].real
+#kdat = poles['k']
 #setting the krange
-valid = (kdat > 0.01) & (kdat<0.3)
-kobs = kdat[valid]
+#valid = (kdat > 0.01) & (kdat<0.3)
+#kobs = kdat[valid]
 #matching the data to the k range
-P0dat = P0dat[valid]
-P2dat = P2dat[valid]
+#P0dat = P0dat[valid]
+#P2dat = P2dat[valid]
+
+
+
+dat = np.loadtxt(inputpk)
+kdat = dat[:,1]
+valid = (kdat>0.01) & (kdat<0.3)
+kobs = dat[valid,1]
+P0dat = dat[valid,3]
+P2dat = dat[valid,4]
 
 #setting the data vector
 Pkdata = np.append(P0dat,P2dat)
@@ -258,7 +267,7 @@ params = [B,beta,alpha_perp,alpha_par,sigs]
 #calculate the chi-square
 poles = [0,2]
 def chi2f(params):
-
+    modelP = model(params)
     Pkmodel = modelP.run(kobs,poles)
     vec = Pkdata - Pkmodel
     vec = np.matrix(vec)
