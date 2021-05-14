@@ -48,14 +48,15 @@ def polysolve(resmodel):
 
 def prepare_poly_k(ell,convolved):
     if not combined:
-        km = np.linspace(0.001,0.4,endpoint=False,num=400)
-        kmodel_vec = np.concatenate([km,km,km])
-        kw = np.dot(M,kmodel_vec)
-        kw = np.dot(W,kw)
-        newkw = np.reshape(kw,(5,40))
-        kslice10 = newkw[0][int(kmin/0.01):int(kmax/0.01)]
-        kslice12 = newkw[2][int(kmin/0.01):int(kmax/0.01)]
-        kslice14 = newkw[4][int(kmin/0.01):int(kmax/0.01)]
+        if convolved:
+            km = np.linspace(0.001,0.4,endpoint=False,num=400)
+            kmodel_vec = np.concatenate([km,km,km])
+            kw = np.dot(M,kmodel_vec)
+            kw = np.dot(W,kw)
+            newkw = np.reshape(kw,(5,40))
+            kslice10 = newkw[0][int(kmin/0.01):int(kmax/0.01)]
+            kslice12 = newkw[2][int(kmin/0.01):int(kmax/0.01)]
+            kslice14 = newkw[4][int(kmin/0.01):int(kmax/0.01)]
                                 
         
         if 4 in ell and convolved:
@@ -402,10 +403,10 @@ if __name__ == "__main__":
 
     import sys
     sys.path.append("./")
-    sys.path.insert(0, '/home/merz/workdir/emcee/BAOfitter/')
+    sys.path.insert(0, '/home/merz/workdir/BAOfitter/')
     from analyticBBsolver import LLSQsolver
 
-    pardict = ConfigObj('/home/merz/workdir/emcee/BAOfitter/config.ini')
+    pardict = ConfigObj('config.ini')
 
     #Cosmo params
     redshift = float(pardict["z"])
@@ -509,8 +510,8 @@ if __name__ == "__main__":
     half = int(size/2)
 
     temp = np.loadtxt(linearpk)
-    ktemp = temp[:,0]
-    Plintemp = temp[:,1]
+    ktemp = temp[0]
+    Plintemp = temp[1]
 
     if 4 in ell:
             cov = np.load(covpath)
@@ -522,11 +523,11 @@ if __name__ == "__main__":
             covinv = inv(cov)
 
 
-
-    Wfile = window
-    Mfile = wideangle
-    W = np.loadtxt(Wfile)
-    M = np.loadtxt(Mfile)
+    if convolved:
+        Wfile = window
+        Mfile = wideangle
+        W = np.loadtxt(Wfile)
+        M = np.loadtxt(Mfile)
 
 
     
@@ -541,10 +542,11 @@ if __name__ == "__main__":
 
 
 
-    Rtemp = np.loadtxt('/home/merz/workdir/emcee/eBOSS/pk_matter_power_spectrum_bao.dat')
-    Plinfunc =  IUS(Rtemp[0],Rtemp[1])
+    
+    Plinfunc =  IUS(temp[0],temp[1])
     #Plinfunc = cosmology.LinearPower(new_cosmo, redshift=redshift, transfer='CLASS')
     Psmlinfunc = cosmology.LinearPower(new_cosmo, redshift=redshift, transfer='NoWiggleEisensteinHu')
+
     
     
     
@@ -618,8 +620,10 @@ if __name__ == "__main__":
 
 
                                                 
-    if not combined:
+    if not combined and 4 in ell:
         np.savetxt(outputMC+'_best_pk.txt',np.column_stack([kobs,Pm[0:ksize],Pm[ksize:2*ksize],Pm[2*kobs.size:3*kobs.size]]))
+    elif not combined and not 4 in ell:
+        np.savetxt(outputMC+'_best_pk.txt',np.column_stack([kobs,Pm[0:ksize],Pm[ksize:2*ksize]]))
 
     else:
                 np.savetxt(outputMC+'_best_pk.txt',np.column_stack([kobs1,Pm[0:ksize],Pm[ksize:2*ksize],Pm[2*ksize:3*ksize],kobs2,Pm[half:half+ksize],Pm[half+ksize:half+2*ksize],Pm[half+2*ksize:half+3*ksize]]),header='NGC k \t P0 \t P2')
