@@ -1,0 +1,27 @@
+
+#Cosmology parameters
+'z' = 1.48
+'h'= 0.676 
+'n_s'= 0.97 
+'omega0_b'= 0.022
+'omega0_m'= 0.31
+'sigma_8' = 0.8
+
+# Paths to input/output files
+linearpk = "/home/merz/workdir/emcee/BAOfitter/files/PlanckDM.linear.pk"
+inputpk = "/home/merz/workdir/emcee/BAOfitter/files/pk_NGC_v7_2_512_default_standard.json"
+#inputpk2 = "/input/"
+covmatrix = "/home/merz/workdir/emcee/BAOfitter/files/covariance_v7_NGC_syst_rmsn_BAO.npy"
+outputMC = "output/test"
+window = "/home/merz/workdir/emcee/BAOfitter/files/W_eBOSS_DR16_QSO_NGC_1_1_1_1_1_10_200_2000_averaged_v1.matrix.gz"
+wideangle = "/home/merz/workdir/emcee/BAOfitter/files/M_eBOSS_DR16_QSO_NGC_1_1_1_1_1_1200_2000.matrix.gz"
+
+
+# Parameters for different fitting setups
+'combined' = 0
+'poles' = 0,2,4
+'degrees' = -1,0,1
+'kmin' = 0.02
+'kmax' = 0.23
+'json' = 1
+'convolve' = 1
